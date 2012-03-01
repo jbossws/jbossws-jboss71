@@ -59,13 +59,23 @@ public final class RemoteDeployer implements Deployer {
 
     private static final Logger LOGGER = Logger.getLogger(RemoteDeployer.class);
     private static final int PORT = 9999;
+    private static final String JBWS_DEPLOYER_HOST = "jbossws.deployer.host";
+    private static final String JBWS_DEPLOYER_PORT = "jbossws.deployer.port";
     private final Map<URL, String> url2Id = new HashMap<URL, String>();
     private final InetAddress address = InetAddress.getByName("127.0.0.1");
 
     private ServerDeploymentManager deploymentManager;
 
     public RemoteDeployer() throws IOException {
-        deploymentManager = ServerDeploymentManager.Factory.create(address, PORT);
+        final String host = System.getProperty(JBWS_DEPLOYER_HOST);
+        InetAddress address;
+        if (host != null) {
+            address = InetAddress.getByName(host);
+        } else {
+            address = InetAddress.getByName("localhost");
+        }
+        final Integer port = Integer.getInteger(JBWS_DEPLOYER_PORT, PORT);
+        deploymentManager = ServerDeploymentManager.Factory.create(address, port);
     }
 
     @Override
