@@ -7,7 +7,7 @@
   <artifactId>jbossws-jboss710</artifactId>
   <description>JBossWS Container integration for JBoss AS 7.1.0.Final</description>
 
-  <version>4.0.3-SNAPSHOT</version>
+  <version>4.1.0-SNAPSHOT</version>
 
   <!-- Parent -->
   <parent>
