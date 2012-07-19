@@ -34,7 +34,7 @@
   <name>JBossWS JBoss AS 7.1.2.Final Integration Parent</name>
   <description>JBossWS JBoss AS 7.1.2.Final Integration Parent</description>
   <groupId>org.jboss.ws</groupId>
-  <artifactId>jboss712</artifactId>
+  <artifactId>jbossws-jboss712-parent</artifactId>
   <version>4.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -68,6 +68,7 @@
     <ejb3.ext.api.version>2.0.0</ejb3.ext.api.version>
     <javassist.version>3.15.0-GA</javassist.version>
     <jboss.common.core.version>2.2.17.GA</jboss.common.core.version>
+    <jboss.logging.processor.version>1.0.2.Final</jboss.logging.processor.version>
   </properties>
 
   <dependencyManagement>
@@ -95,6 +96,12 @@
         <artifactId>jboss-msc</artifactId>
         <version>${jboss.msc.version}</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging-processor</artifactId>
+        <version>${jboss.logging.processor.version}</version>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.as</groupId>
@@ -136,6 +143,12 @@
         <groupId>org.jboss.as</groupId>
         <artifactId>jboss-as-security</artifactId>
         <version>${jboss.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-clustering-infinispan</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.jboss.marshalling</groupId>
@@ -257,6 +270,20 @@
         <groupId>org.jboss.remotingjmx</groupId>
         <artifactId>remoting-jmx</artifactId>
         <version>${remoting.jmx.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-processor</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-nio</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.jboss.remoting3</groupId>
