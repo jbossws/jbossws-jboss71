@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.as.webservices.tests;
+package org.jboss.as.webservices.deployer;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ALLOW_RESOURCE_SERVICE_RESTART;
@@ -239,6 +239,16 @@ public final class RemoteDeployer implements Deployer {
     
             applyUpdate(op, getModelControllerClient());
         }
+    }
+
+    @Override
+    public void addHttpsConnector(final Map<String, String> sslOptions) throws Exception {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void removeHttpsConnector() throws Exception {
+        throw new UnsupportedOperationException();
     }
 
     private ModelControllerClient getModelControllerClient() {
