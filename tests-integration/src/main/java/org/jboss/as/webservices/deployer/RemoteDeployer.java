@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.as.webservices.tests;
+package org.jboss.as.webservices.deployer;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -128,7 +128,7 @@ public final class RemoteDeployer implements Deployer {
             } else {
                 archiveCounters.put(k, 1);
             }
-            
+
             final DeploymentPlanBuilder builder = deploymentManager.newDeploymentPlan().add(archiveURL).andDeploy();
             final DeploymentPlan plan = builder.build();
             final DeploymentAction deployAction = builder.getLastAction();
@@ -154,7 +154,7 @@ public final class RemoteDeployer implements Deployer {
                 LOGGER.warn("Trying to undeploy archive " + archiveURL + " which is not currently deployed!");
                 return;
             }
-            
+
             final DeploymentPlanBuilder builder = deploymentManager.newDeploymentPlan();
             final String uniqueName = url2Id.get(archiveURL);
             if (uniqueName != null) {
@@ -207,34 +207,34 @@ public final class RemoteDeployer implements Deployer {
             } else {
                 securityDomainUsers.put(name, 1);
             }
-            
+
             final List<ModelNode> updates = new ArrayList<ModelNode>();
-    
+
             ModelNode op = new ModelNode();
             op.get(OP).set(ADD);
             op.get(OP_ADDR).add(SUBSYSTEM, "security");
             op.get(OP_ADDR).add(SECURITY_DOMAIN, name);
             updates.add(op);
-    
+
             op = new ModelNode();
             op.get(OP).set(ADD);
             op.get(OP_ADDR).add(SUBSYSTEM, "security");
             op.get(OP_ADDR).add(SECURITY_DOMAIN, name);
             op.get(OP_ADDR).add(AUTHENTICATION, CLASSIC);
-    
+
             final ModelNode loginModule = op.get(LOGIN_MODULES).add();
             loginModule.get(CODE).set("UsersRoles");
             loginModule.get(FLAG).set(REQUIRED);
             op.get(OPERATION_HEADERS).get(ALLOW_RESOURCE_SERVICE_RESTART).set(true);
             updates.add(op);
-    
+
             final ModelNode moduleOptions = loginModule.get(MODULE_OPTIONS);
             if (authenticationOptions != null) {
                 for (final String k : authenticationOptions.keySet()) {
                     moduleOptions.add(k, authenticationOptions.get(k));
                 }
             }
-    
+
             applyUpdates(updates, getModelControllerClient());
         }
     }
@@ -248,17 +248,17 @@ public final class RemoteDeployer implements Deployer {
             } else {
                 securityDomainUsers.remove(name);
             }
-            
+
             final ModelNode op = new ModelNode();
             op.get(OP).set(REMOVE);
             op.get(OP_ADDR).add(SUBSYSTEM, "security");
             op.get(OP_ADDR).add(SECURITY_DOMAIN, name);
             op.get(OPERATION_HEADERS, ROLLBACK_ON_RUNTIME_FAILURE).set(false);
-    
+
             applyUpdate(op, getModelControllerClient());
         }
     }
-    
+
     @Override
     public void addHttpsConnector(Map<String, String> sslOptions) throws Exception {
         httpsConnSemaphore.acquire();
@@ -355,7 +355,7 @@ public final class RemoteDeployer implements Deployer {
             }
         };
     }
-    
+
     public static ModelNode createOpNode(String address, String operation) {
         ModelNode op = new ModelNode();
         // set address
