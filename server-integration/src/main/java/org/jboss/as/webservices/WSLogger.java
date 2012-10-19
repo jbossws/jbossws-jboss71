@@ -253,4 +253,9 @@ public interface WSLogger extends BasicLogger {
     @LogMessage(level = ERROR)
     @Message(id = 15592, value = "Cannot unregister record processor with JMX server")
     void cannotUnregisterRecordProcessor();
+
+    @LogMessage(level = WARN)
+    @Message(id = 15596, value = "Multiple EJB3 endpoints in the same deployment with different declared security roles; be aware this might be a security risk if you're not controlling allowed roles (@RolesAllowed) on each ws endpoint method.")
+    void multipleEndpointsWithDifferentDeclaredSecurityRoles();
+    
 }
