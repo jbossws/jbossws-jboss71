@@ -88,7 +88,9 @@ public final class ServerConfigService implements Service<ServerConfig> {
         builder.addDependency(ServerEnvironmentService.SERVICE_NAME, ServerEnvironment.class, serverConfig.getServerEnvironmentInjector());
         builder.addListener(listener);
         builder.setInitialMode(Mode.ACTIVE);
-        return builder.install();
+        ServiceController<?> sc = builder.install();
+        WSServices.saveContainerRegistry(sc.getServiceContainer());
+        return sc;
     }
 
 }

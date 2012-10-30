@@ -192,6 +192,11 @@ public final class EndpointService implements Service<Endpoint> {
         builder.setInitialMode(Mode.ACTIVE);
         builder.install();
     }
+    
+    public static void uninstall(final Endpoint endpoint, final DeploymentUnit unit) {
+        final ServiceName serviceName = getServiceName(unit, endpoint.getShortName());
+        WSServices.getContainerRegistry().getRequiredService(serviceName).setMode(Mode.REMOVE);
+    }
 
     private static String getDeploymentSecurityDomainName(final Endpoint ep) {
         JBossWebMetaData metadata = ep.getService().getDeployment().getAttachment(JBossWebMetaData.class);

@@ -83,8 +83,8 @@ public final class EndpointPublishService implements Service<Context> {
     public void start(final StartContext ctx) throws StartException {
         ROOT_LOGGER.starting(name);
         try {
-            EndpointPublisherImpl publisher = new EndpointPublisherImpl(hostInjector.getValue().getHost());
-            wsctx = publisher.publish(context, loader, urlPatternToClassName);
+            EndpointPublisherImpl publisher = new EndpointPublisherImpl(hostInjector.getValue().getHost(), true);
+            wsctx = publisher.publish(ctx.getChildTarget(), context, loader, urlPatternToClassName, null);
         } catch (Exception e) {
             throw new StartException(e);
         }
@@ -94,7 +94,7 @@ public final class EndpointPublishService implements Service<Context> {
     public void stop(final StopContext ctx) {
         ROOT_LOGGER.stopping(name);
         try {
-            EndpointPublisherImpl publisher = new EndpointPublisherImpl(hostInjector.getValue().getHost());
+            EndpointPublisherImpl publisher = new EndpointPublisherImpl(hostInjector.getValue().getHost(), true);
             publisher.destroy(wsctx);
         } catch (Exception e) {
             throw new RuntimeException(e);
