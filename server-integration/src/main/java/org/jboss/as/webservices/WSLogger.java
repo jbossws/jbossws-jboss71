@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 20112 Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -40,6 +40,7 @@ import org.jboss.wsf.spi.deployment.DeploymentAspect;
 
 /**
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
+ * @author <a href="mailto:alessio.soldano@jboss.com">Alessio Soldano</a>
  */
 @MessageLogger(projectCode = "JBAS")
 public interface WSLogger extends BasicLogger {
@@ -261,5 +262,9 @@ public interface WSLogger extends BasicLogger {
     @LogMessage(level = WARN)
     @Message(id = 15596, value = "Multiple EJB3 endpoints in the same deployment with different declared security roles; be aware this might be a security risk if you're not controlling allowed roles (@RolesAllowed) on each ws endpoint method.")
     void multipleEndpointsWithDifferentDeclaredSecurityRoles();
+
+    @LogMessage(level = TRACE)
+    @Message(id = 15597, value = "Child '%s' not found for VirtualFile: %s")
+    void missingChild(String child, VirtualFile file);
     
 }
