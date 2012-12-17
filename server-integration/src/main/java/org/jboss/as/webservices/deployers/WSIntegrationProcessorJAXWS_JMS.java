@@ -28,7 +28,6 @@ import static org.jboss.as.webservices.util.ASHelper.getAnnotations;
 import static org.jboss.as.webservices.util.DotNames.WEB_SERVICE_ANNOTATION;
 import static org.jboss.as.webservices.util.WSAttachmentKeys.JMS_ENDPOINT_METADATA_KEY;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -99,11 +98,12 @@ public final class WSIntegrationProcessorJAXWS_JMS implements DeploymentUnitProc
         if (!map.isEmpty()) {
 
             for (String wsdlLocation : map.keySet()) {
-                try {
-                    final ResourceRoot resourceRoot = getWsdlResourceRoot(unit, wsdlLocation);
-                    if (resourceRoot == null) continue;
-                    final UnifiedVirtualFile uvf = new VirtualFileAdaptor(resourceRoot.getRoot());
-                    URL url = uvf.findChild(wsdlLocation).toURL();
+                final ResourceRoot resourceRoot = getWsdlResourceRoot(unit, wsdlLocation);
+                if (resourceRoot == null) continue;
+                final UnifiedVirtualFile uvf = new VirtualFileAdaptor(resourceRoot.getRoot());
+                UnifiedVirtualFile childUvf = uvf.findChildFailSafe(wsdlLocation);
+                if (childUvf != null) {
+                    URL url = childUvf.toURL();
                     SOAPAddressWSDLParser parser = new SOAPAddressWSDLParser(url);
                     for (AnnotationInstance ai : map.get(wsdlLocation)) {
                         String port = ai.value(PORT_NAME).asString();
@@ -127,7 +127,7 @@ public final class WSIntegrationProcessorJAXWS_JMS implements DeploymentUnitProc
                             endpointsMetaData.addEndpointMetaData(endpointMetaData);
                         }
                     }
-                } catch (Exception ignore) {
+                } else {
                     ROOT_LOGGER.cannotReadWsdl(wsdlLocation);
                 }
             }
@@ -141,7 +141,7 @@ public final class WSIntegrationProcessorJAXWS_JMS implements DeploymentUnitProc
         // NOOP
     }
 
-    private static ResourceRoot getWsdlResourceRoot(final DeploymentUnit unit, final String wsdlPath) throws MalformedURLException {
+    private static ResourceRoot getWsdlResourceRoot(final DeploymentUnit unit, final String wsdlPath) {
         final AttachmentList<ResourceRoot> resourceRoots = new AttachmentList<ResourceRoot>(ResourceRoot.class);
         final ResourceRoot root = unit.getAttachment(DEPLOYMENT_ROOT);
         resourceRoots.add(root);
