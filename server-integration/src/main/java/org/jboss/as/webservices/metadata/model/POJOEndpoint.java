@@ -30,15 +30,17 @@ public final class POJOEndpoint extends AbstractEndpoint {
     private final boolean isDeclared;
 
     public POJOEndpoint(final String name, final String className, final String urlPattern) {
-        super(name, className);
-        this.urlPattern = urlPattern;
-        isDeclared = true;
+        this(name, className, urlPattern, true);
     }
 
     public POJOEndpoint(final String className, final String urlPattern) {
-        super(className, className);
+        this(className, className, urlPattern, false);
+    }
+
+    public POJOEndpoint(final String name, final String className, final String urlPattern, boolean isDeclared) {
+        super(name, className);
         this.urlPattern = urlPattern;
-        this.isDeclared = false;
+        this.isDeclared = isDeclared;
     }
 
     public String getUrlPattern() {
