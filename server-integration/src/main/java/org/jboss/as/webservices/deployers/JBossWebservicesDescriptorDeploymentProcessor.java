@@ -21,16 +21,17 @@
  */
 package org.jboss.as.webservices.deployers;
 
+import org.jboss.as.ee.structure.JBossDescriptorPropertyReplacement;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.as.server.deployment.DeploymentUnitProcessor;
 import org.jboss.as.server.deployment.module.ResourceRoot;
+import org.jboss.as.webservices.metadata.JBossWebservicesPropertyReplaceFactory;
 import org.jboss.as.webservices.util.VirtualFileAdaptor;
 import org.jboss.as.webservices.util.WSAttachmentKeys;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
-import org.jboss.wsf.spi.metadata.webservices.JBossWebservicesFactory;
 import org.jboss.wsf.spi.metadata.webservices.JBossWebservicesMetaData;
 
 /**
@@ -44,10 +45,14 @@ public final class JBossWebservicesDescriptorDeploymentProcessor implements Depl
         final DeploymentUnit unit = phaseContext.getDeploymentUnit();
         final ResourceRoot deploymentRoot = unit.getAttachment(Attachments.DEPLOYMENT_ROOT);
         final UnifiedVirtualFile virtualFile = new VirtualFileAdaptor(deploymentRoot.getRoot());
-        final JBossWebservicesMetaData jbossWebservicesMD = JBossWebservicesFactory.loadFromVFSRoot(virtualFile);
+        final JBossWebservicesPropertyReplaceFactory webservicesFactory = new JBossWebservicesPropertyReplaceFactory(
+              null, JBossDescriptorPropertyReplacement.propertyReplacer(unit));
+        final JBossWebservicesMetaData jbossWebservicesMD = webservicesFactory.loadFromVFSRoot(virtualFile);
         if (jbossWebservicesMD != null) {
             unit.putAttachment(WSAttachmentKeys.JBOSS_WEBSERVICES_METADATA_KEY, jbossWebservicesMD);
         }
+        
+        
     }
 
     public void undeploy(final DeploymentUnit unit) {
