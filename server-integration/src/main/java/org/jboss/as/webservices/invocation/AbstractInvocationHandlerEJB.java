@@ -25,8 +25,13 @@ import static org.jboss.as.webservices.WSMessages.MESSAGES;
 import static org.jboss.as.webservices.metadata.model.EJBEndpoint.EJB_COMPONENT_VIEW_NAME;
 import static org.jboss.as.webservices.util.ASHelper.getMSCService;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
+
+import javax.management.MBeanException;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import org.jboss.as.ee.component.Component;
 import org.jboss.as.ee.component.ComponentView;
@@ -121,6 +126,33 @@ abstract class AbstractInvocationHandlerEJB extends AbstractInvocationHandler {
          onAfterInvocation(wsInvocation);
       }
    }
+   
+   protected void handleInvocationException(final Throwable t) throws Exception {
+      if (t instanceof MBeanException) {
+         throw ((MBeanException) t).getTargetException();
+      }
+      if (t instanceof Exception) {
+         SOAPFaultException ex = findSoapFaultException(t);
+         if(ex != null) {
+              throw new InvocationTargetException(ex);
+         }
+         throw (Exception)t;
+      }
+      if (t instanceof Error) {
+         throw (Error) t;
+      }
+      throw new UndeclaredThrowableException(t);
+   }
+   
+   protected SOAPFaultException findSoapFaultException(Throwable ex) {
+      if (ex instanceof SOAPFaultException) {
+          return (SOAPFaultException)ex;
+      }
+      if (ex.getCause() != null) {
+          return findSoapFaultException(ex.getCause());
+      }
+      return null;
+  }
 
    /**
     * Translates SEI method to EJB view method.
