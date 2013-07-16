@@ -55,16 +55,17 @@ public final class EndpointServiceDeploymentAspect extends EndpointLifecycleDepl
     @Override
     public void stop(Deployment dep)
     {
-        if (stopServices) {
-            final DeploymentUnit unit = getRequiredAttachment(dep, DeploymentUnit.class);
-            for (final Endpoint ep : dep.getService().getEndpoints()) {
+        for (final Endpoint ep : dep.getService().getEndpoints()) {
+            if (ep.getLifecycleHandler() != null) {
+                ep.getLifecycleHandler().stop(ep);
+            }
+            if (stopServices) {
+                final DeploymentUnit unit = getRequiredAttachment(dep, DeploymentUnit.class);
                 LifecycleHandler lifecycleHandler = getLifecycleHandler(ep, false);
                 if (lifecycleHandler != null)
                    lifecycleHandler.stop(ep);
                 EndpointService.uninstall(ep, unit);
             }
-        } else {
-            super.stop(dep);
         }
     }
     
